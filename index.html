@@ -153,20 +153,40 @@
   </main>
 
   <script>
-    // Replace with a backend API or Firebase Firestore lookup in production
     const certificatesDB = {
-      "CERT-20250816-SAMPLE": {
-        learner: "Alex Morgan",
+      "JC-20260816-UPONXWML": {
+        learner: "Shubham Dey",
         programme: "FULL-STACK WEB DEVELOPMENT",
         type: "INTERNSHIP",
-        issued: "16-08-2025",
+        issued: "16-08-2026",
         validFrom: "12-06-2025"
+      },
+      "JC-20260816-UPONXWMM": {
+        learner: "Harsh Kumar",
+        programme: "FULL-STACK WEB DEVELOPMENT",
+        type: "INTERNSHIP",
+        issued: "18-08-2026",
+        validFrom: "15-06-2026"
+      },
+      "JC-20260816-UPONXWMK": {
+        learner: "Ujjwal Kumar",
+        programme: "FULL-STACK WEB DEVELOPMENT",
+        type: "INTERNSHIP",
+        issued: "18-08-2026",
+        validFrom: "15-06-2026"
+      },
+      "JC-20260816-UPONXWMX": {
+        learner: "Adrish Saha",
+        programme: "FULL-STACK WEB DEVELOPMENT",
+        type: "INTERNSHIP",
+        issued: "18-08-2026",
+        validFrom: "15-06-2026"
       }
     };
 
     const params = new URLSearchParams(window.location.search);
-    const certId = params.get("id") || "CERT-20250816-SAMPLE"; // Default for local preview
-    const record = certificatesDB[certId];
+    const certId = params.get("id");
+    const record = certId ? certificatesDB[certId] : null;
 
     const statusBanner = document.getElementById("statusBanner");
     const statusIcon = document.getElementById("statusIcon");
@@ -185,7 +205,9 @@
     } else {
       statusBanner.classList.add("invalid");
       statusIcon.innerHTML = `<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>`;
-      statusText.textContent = `Certificate Not Found • ID: ${certId}`;
+      statusText.textContent = certId
+        ? `Certificate Not Found • ID: ${certId}`
+        : "No Certificate ID Provided";
     }
   </script>
 </body>
