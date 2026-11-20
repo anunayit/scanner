@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Certificate Verification</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      background: radial-gradient(circle at top right, #161838 0%, #0b0f1c 55%, #070a14 100%);
+      color: #f3f4f6;
+      padding: 24px 16px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Verification Banner */
+    .status-banner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      border-radius: 12px;
+      background: rgba(17, 56, 66, 0.45);
+      border: 1px solid rgba(45, 212, 191, 0.18);
+      color: #2aa89b;
+      font-size: 16px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    .status-banner.invalid {
+      background: rgba(88, 22, 28, 0.45);
+      border-color: rgba(248, 113, 113, 0.25);
+      color: #f87171;
+    }
+
+    .status-icon {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Details Card */
+    .details-card {
+      background: rgba(15, 20, 32, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 28px 24px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .card-header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+    }
+
+    .badge {
+      background: #232a3b;
+      color: #e5e7eb;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .details-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      font-size: 15.5px;
+      line-height: 1.55;
+      color: #e5e7eb;
+    }
+
+    .detail-row span.label {
+      color: #d1d5db;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <!-- Status Banner -->
+    <div id="statusBanner" class="status-banner">
+      <svg id="statusIcon" class="status-icon" viewBox="0 0 24 24">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <div id="statusText">Verifying certificate...</div>
+    </div>
+
+    <!-- Details Card -->
+    <section id="detailsCard" class="details-card hidden">
+      <div class="card-header">
+        <h1>Details</h1>
+        <span id="typeBadge" class="badge">INTERNSHIP</span>
+      </div>
+
+      <div class="details-list">
+        <div class="detail-row">
+          <span class="label">Learner:</span> <span id="learnerName"></span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Programme:</span> <span id="programmeName"></span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Type:</span> <span id="certType"></span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Issued:</span> <span id="issuedDate"></span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Valid From:</span> <span id="validFrom"></span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Replace with a backend API or Firebase Firestore lookup in production
+    const certificatesDB = {
+      "CERT-20250816-SAMPLE": {
+        learner: "Alex Morgan",
+        programme: "FULL-STACK WEB DEVELOPMENT",
+        type: "INTERNSHIP",
+        issued: "16-08-2025",
+        validFrom: "12-06-2025"
+      }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const certId = params.get("id") || "CERT-20250816-SAMPLE"; // Default for local preview
+    const record = certificatesDB[certId];
+
+    const statusBanner = document.getElementById("statusBanner");
+    const statusIcon = document.getElementById("statusIcon");
+    const statusText = document.getElementById("statusText");
+    const detailsCard = document.getElementById("detailsCard");
+
+    if (record) {
+      statusText.textContent = `Certificate Genuine • Certificate ID: ${certId}`;
+      document.getElementById("typeBadge").textContent = record.type;
+      document.getElementById("learnerName").textContent = record.learner;
+      document.getElementById("programmeName").textContent = record.programme;
+      document.getElementById("certType").textContent = record.type;
+      document.getElementById("issuedDate").textContent = record.issued;
+      document.getElementById("validFrom").textContent = record.validFrom;
+      detailsCard.classList.remove("hidden");
+    } else {
+      statusBanner.classList.add("invalid");
+      statusIcon.innerHTML = `<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>`;
+      statusText.textContent = `Certificate Not Found • ID: ${certId}`;
+    }
+  </script>
+</body>
+</html>
